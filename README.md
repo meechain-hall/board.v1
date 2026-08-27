@@ -2,7 +2,9 @@
 ## Section — ComPort Hall v1.1
 
 [![Open in Bolt](https://bolt.new/static/open-in-bolt.svg)](https://bolt.new/~/sb1-mdw4e1bj)
+
   
+<img width="1536" height="1024" alt="copilot_image_1786667127835" src="https://github.com/user-attachments/assets/3d65a026-2030-4e10-ae68-01f004f7c44f" />
 
 ---
 🏛️ ComPort Hall v1.1 — Shared State Verified
@@ -32,7 +34,7 @@ UI และ API ทำงานร่วมกันอย่างถูกต
 - Real-Time Transport → อัปเกรดระบบ  
 
 ---
-
+<img width="1024" height="1024" alt="copilot_image_1787840170909" src="https://github.com/user-attachments/assets/852f2fda-5295-4cf7-966f-c6bcfbab10c3" />
 ---
 
 🏛️ ความหมายของ Badge นี้
