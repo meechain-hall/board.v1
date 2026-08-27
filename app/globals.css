@@ -3,38 +3,191 @@
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 100%;
-  --foreground: 0 0% 3.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 0 0% 3.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 3.9%;
-  --primary: 0 0% 9%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 0 0% 96.1%;
-  --secondary-foreground: 0 0% 9%;
-  --muted: 0 0% 96.1%;
-  --muted-foreground: 0 0% 45.1%;
-  --accent: 0 0% 96.1%;
-  --accent-foreground: 0 0% 9%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 89.8%;
-  --input: 0 0% 89.8%;
-  --ring: 0 0% 3.9%;
-  --chart-1: 12 76% 61%;
-  --chart-2: 173 58% 39%;
-  --chart-3: 197 37% 24%;
-  --chart-4: 43 74% 66%;
-  --chart-5: 27 87% 67%;
-  --radius: 0.5rem;
+  --background: 222 42% 7%;
+  --foreground: 38 42% 93%;
+  --card: 224 35% 11%;
+  --card-foreground: 38 42% 93%;
+  --popover: 224 35% 11%;
+  --popover-foreground: 38 42% 93%;
+  --primary: 40 91% 57%;
+  --primary-foreground: 222 42% 7%;
+  --secondary: 222 32% 17%;
+  --secondary-foreground: 38 42% 93%;
+  --muted: 222 25% 18%;
+  --muted-foreground: 218 16% 67%;
+  --accent: 229 75% 55%;
+  --accent-foreground: 38 42% 98%;
+  --destructive: 8 73% 50%;
+  --destructive-foreground: 38 42% 98%;
+  --border: 40 45% 28%;
+  --input: 222 28% 20%;
+  --ring: 40 91% 57%;
+  --radius: 0.65rem;
 }
 
 @layer base {
-  * {
-    @apply border-border;
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground; }
+  button { @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring; }
+}
+
+html { @apply bg-background; }
+
+.magic-shell {
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.magic-backdrop {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(6, 10, 27, 0.76), rgba(10, 8, 20, 0.94)), 
+              url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/copilot_image_1785445329905.jpeg-6FpPs01eNMwApH0zHNkk2fAkQpw9R5.png') center/cover;
+  filter: saturate(0.85);
+  z-index: 0;
+}
+
+.magic-header {
+  border-bottom: 1px solid rgba(207, 151, 48, 0.6);
+  background: rgba(7, 11, 27, 0.82);
+  padding: 1rem 1.25rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 20;
+}
+
+.magic-seal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  color: #f4c44f;
+  border: 2px solid #9d6c20;
+  border-radius: 50%;
+  background: radial-gradient(circle, #57231a, #14152a 70%);
+  box-shadow: 0 0 18px rgba(233, 164, 40, 0.3);
+}
+
+.magic-kicker {
+  color: #f4c44f;
+  font-family: Georgia, serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.magic-live,
+.magic-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  background: rgba(16, 71, 54, 0.35);
+  color: #9bf0b3;
+  border-radius: 999px;
+  padding: 0.55rem 0.8rem;
+  font-family: monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+}
+
+.magic-badge {
+  border-color: rgba(244, 196, 79, 0.35);
+  background: rgba(87, 53, 15, 0.35);
+  color: #f8df9b;
+}
+
+.magic-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  border: 1px solid rgba(190, 145, 56, 0.35);
+  padding: 0.4rem;
+  background: rgba(10, 14, 32, 0.82);
+  position: relative;
+  z-index: 20;
+  margin-bottom: 1.75rem;
+}
+
+.magic-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid transparent;
+  padding: 0.65rem 0.8rem;
+  color: #9299ad;
+  font-family: monospace;
+  font-size: 0.72rem;
+  transition: all 0.2s;
+  border-radius: 0.5rem;
+}
+
+.magic-tab:hover {
+  color: #f4d489;
+  background: rgba(116, 83, 30, 0.25);
+}
+
+.magic-tab-active {
+  color: #fff0bd;
+  border-color: #b8882d;
+  background: linear-gradient(180deg, rgba(117, 78, 20, 0.75), rgba(50, 35, 19, 0.75));
+  box-shadow: inset 0 0 14px rgba(244, 196, 79, 0.1);
+}
+
+.font-serif {
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+@media (max-width: 640px) {
+  .magic-tab span {
+    display: none;
   }
-  body {
-    @apply bg-background text-foreground;
+  .magic-tab {
+    padding: 0.7rem;
   }
+  .magic-header {
+    padding: 0.85rem;
+  }
+}
+
+/* Compatibility overrides for existing components */
+.bg-\[\#0a0a0a\] {
+  background-color: rgba(10, 14, 29, 0.86) !important;
+}
+
+.bg-\[\#050505\] {
+  background-color: rgba(5, 8, 20, 0.78) !important;
+}
+
+.text-indigo-400 {
+  color: #8fb8ff !important;
+}
+
+.text-purple-300 {
+  color: #d9a8ff !important;
+}
+
+.border-slate-800 {
+  border-color: rgba(190, 145, 56, 0.28) !important;
+}
+
+.border-slate-800\/60 {
+  border-color: rgba(190, 145, 56, 0.2) !important;
+}
+
+.text-slate-500,
+.text-slate-600 {
+  color: #8991a6 !important;
+}
+
+.text-slate-300,
+.text-slate-400 {
+  color: #d9d2c5 !important;
+}
+
+.text-white {
+  color: #fff8e8 !important;
 }

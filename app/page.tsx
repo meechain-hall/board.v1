@@ -55,51 +55,34 @@ export default function Home() {
   }, [fetchStats]);
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Header */}
-        <header className="mb-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                <Layers3 className="w-5 h-5 text-white" />
-              </div>
+    <main className="min-h-screen bg-background text-foreground magic-shell">
+      <div className="magic-backdrop" aria-hidden="true" />
+      <div className="relative z-10 mx-auto max-w-[1440px] px-4 py-5 sm:px-6 lg:px-10 lg:py-7">
+        <header className="magic-header mb-6">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex items-center gap-4">
+              <div className="magic-seal"><Layers3 className="h-7 w-7" /></div>
               <div>
-                <h1 className="text-xl font-bold tracking-tight">
-                  MeeChain <span className="text-indigo-400 font-normal">Dashboard</span>
-                </h1>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-mono">
-                  Network Operations & Infrastructure Control
-                </p>
+                <p className="magic-kicker">MeeChain Magic Hall</p>
+                <h1 className="font-serif text-2xl font-bold tracking-wide text-foreground sm:text-3xl">Network of Rituals</h1>
+                <p className="mt-1 text-xs text-muted-foreground">A living archive of quests, relics, and guardians</p>
               </div>
             </div>
-
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[11px] font-mono font-semibold text-emerald-400">LIVE</span>
-              </div>
+            <div className="flex items-center gap-3 self-start lg:self-auto">
+              <div className="magic-live"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" /> NETWORK LIVE</div>
+              <div className="magic-badge">AI-GENERATED</div>
             </div>
           </div>
         </header>
 
-        {/* Tab Navigation */}
-        <nav className="mb-6 flex flex-wrap gap-1.5 border-b border-slate-800 pb-px">
+        <nav className="magic-nav mb-7" aria-label="Magic Hall sections">
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-t-lg text-xs font-mono font-semibold transition border-b-2 -mb-px ${
-                  isActive
-                    ? 'text-white border-indigo-500 bg-[#0a0a0a]'
-                    : 'text-slate-500 border-transparent hover:text-slate-300 hover:bg-[#0a0a0a]/50'
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" />
-                {tab.label}
+              <button key={tab.id} onClick={() => setActiveTab(tab.id)} aria-current={isActive ? 'page' : undefined}
+                className={`magic-tab ${isActive ? 'magic-tab-active' : ''}`}>
+                <Icon className="h-4 w-4" /> <span>{tab.label}</span>
               </button>
             );
           })}
