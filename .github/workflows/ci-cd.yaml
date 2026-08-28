@@ -5,28 +5,40 @@ on:
     branches:
       - main
       - develop
+
   pull_request:
     branches:
       - main
       - develop
+
+# Prevent multiple CI runs for the same branch/PR from competing.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL || 'https://api.meechain.live' }}
   NEXT_PUBLIC_RPC_URL: ${{ secrets.NEXT_PUBLIC_RPC_URL || 'https://rpc.meechain.live' }}
   NEXT_PUBLIC_CHAIN_ID: ${{ secrets.NEXT_PUBLIC_CHAIN_ID || '13390' }}
 
+permissions:
+  contents: read
+
 jobs:
-  # Job 1: Lint & Type Check
+
+  # ============================================================
+  # 1. LINT & TYPECHECK
+  # ============================================================
   lint-and-typecheck:
     runs-on: ubuntu-latest
     name: Lint & Type Check
-    
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
@@ -36,11 +48,14 @@ jobs:
 
       - name: Run ESLint
         run: npm run lint
-        
+
       - name: Run TypeScript check
         run: npm run typecheck
-        
-  # Job 2: Build Next.js
+
+
+  # ============================================================
+  # 2. BUILD NEXT.JS
+  # ============================================================
   build:
     runs-on: ubuntu-latest
     name: Build Next.js
@@ -48,16 +63,24 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Verify environment
+        run: |
+          echo "Node: $(node --version)"
+          echo "npm:  $(npm --version)"
+          echo "NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}"
+          echo "NEXT_PUBLIC_RPC_URL: ${NEXT_PUBLIC_RPC_URL}"
+          echo "NEXT_PUBLIC_CHAIN_ID: ${NEXT_PUBLIC_CHAIN_ID}"
 
       - name: Build Next.js
         run: npm run build
@@ -67,121 +90,106 @@ jobs:
           NEXT_PUBLIC_CHAIN_ID: ${{ env.NEXT_PUBLIC_CHAIN_ID }}
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        if: success()
+        uses: actions/upload-artifact@v4
         with:
-          name: build
+          name: nextjs-build
           path: .next
+          retention-days: 7
 
-  # Job 4: E2E Tests with Playwright
+
+  # ============================================================
+  # 3. SECURITY SCAN
+  # ============================================================
+  security:
+    runs-on: ubuntu-latest
+    name: Security Scan
+    needs: lint-and-typecheck
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Do not hide npm audit failures.
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: sarif
+          output: trivy-results.sarif
+          ignore-unfixed: true
+
+      - name: Upload Trivy results
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif
+
+
+  # ============================================================
+  # 4. E2E VERIFICATION
+  # ============================================================
+  #
+  # Intentionally NOT part of the production deployment gate yet.
+  #
+  # Playwright/Cypress should only become a required gate after
+  # the project has real configuration and test coverage.
+  #
   e2e-playwright:
     runs-on: ubuntu-latest
     name: E2E Tests (Playwright)
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: false
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - run: echo "Playwright verification is not configured yet."
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-          cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-
-      - name: Start Next.js dev server
-        run: npm run dev -- --hostname 0.0.0.0 --port 3000 > next-dev.log 2>&1 &
-
-      - name: Wait for server
-        run: |
-          for i in {1..30}; do
-          if curl -fsS http://localhost:3000/api/health; then
-          echo "Next.js server is ready"
-          exit 0
-          fi
-          echo "Waiting for Next.js..."
-          sleep 2
-          done
-
-          echo "Next.js failed to start"
-          cat next-dev.log
-          exit 1
-
-      - name: Run Playwright tests
-        run: npx playwright test 2>/dev/null || echo "Playwright not configured, skipping"
-
-      - name: Upload Playwright report
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: playwright-report
-          path: playwright-report/
-
-  # Job 5: E2E Tests with Cypress
   e2e-cypress:
     runs-on: ubuntu-latest
     name: E2E Tests (Cypress)
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: false
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - run: echo "Cypress verification is not configured yet."
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-          cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run Cypress tests
-        run: npm run cypress:run 2>/dev/null || echo "Cypress not configured, skipping"
-        env:
-          NEXT_PUBLIC_API_URL: ${{ env.NEXT_PUBLIC_API_URL }}
-          NEXT_PUBLIC_RPC_URL: ${{ env.NEXT_PUBLIC_RPC_URL }}
-
-      - name: Upload Cypress videos
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: cypress-videos
-          path: cypress/videos/
-
-  # Job 6: Code Quality (optional - SonarQube, CodeClimate, etc)
-  code-quality:
-    runs-on: ubuntu-latest
-    name: Code Quality
-    needs: build
-    if: github.event_name == 'push'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Run SonarQube scan (optional)
-        run: |
-          echo "SonarQube scan would run here"
-          echo "Configure in .sonarcloud.properties if needed"
-
-  # Job 7: Deploy to Vercel (main branch only)
+  # ============================================================
+  # 5. DEPLOY TO VERCEL
+  # ============================================================
   deploy-vercel:
     runs-on: ubuntu-latest
     name: Deploy to Vercel
-    needs: [build, e2e-playwright]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    # Production deployment only depends on real verification.
+    needs:
+      - build
+      - security
+
+    if: >
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main'
+
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Deploy to Vercel
         uses: vercel/action@v4
@@ -195,65 +203,85 @@ jobs:
             NEXT_PUBLIC_RPC_URL=${{ env.NEXT_PUBLIC_RPC_URL }}
             NEXT_PUBLIC_CHAIN_ID=${{ env.NEXT_PUBLIC_CHAIN_ID }}
 
-      - name: Comment on PR with deployment
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '✅ Vercel deployment complete! Your changes are live.'
-            })
+      - name: Deployment summary
+        run: |
+          echo "=========================================="
+          echo " MeeChain Production Deployment"
+          echo "=========================================="
+          echo "Branch : ${GITHUB_REF_NAME}"
+          echo "Commit : ${GITHUB_SHA}"
+          echo "Chain  : ${NEXT_PUBLIC_CHAIN_ID}"
+          echo "API    : ${NEXT_PUBLIC_API_URL}"
+          echo "RPC    : ${NEXT_PUBLIC_RPC_URL}"
+          echo "Status : DEPLOYED"
+          echo "=========================================="
 
-  # Job 8: Performance Test (optional)
+
+  # ============================================================
+  # 6. DEPLOYMENT VERIFICATION
+  # ============================================================
+  #
+  # Lightweight post-deployment verification.
+  # This does not replace the Production Code Hub.
+  #
+  production-verify:
+    runs-on: ubuntu-latest
+    name: Production Verification
+    needs: deploy-vercel
+
+    if: >
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Verify production API
+        run: |
+          echo "Checking production health endpoint..."
+
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --max-time 20 \
+            https://app.meechain.live/api/health
+
+          echo
+          echo "Production health check passed."
+
+      - name: Verify RPC endpoint
+        run: |
+          echo "Checking MeeChain RPC..."
+
+          RESPONSE=$(curl \
+            --fail \
+            --silent \
+            --show-error \
+            --max-time 20 \
+            -X POST \
+            -H "Content-Type: application/json" \
+            --data '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}' \
+            https://rpc.meechain.live)
+
+          echo "$RESPONSE"
+
+          echo "$RESPONSE" | grep -q '"0x347e"' || {
+            echo "ERROR: RPC returned unexpected chain ID."
+            exit 1
+          }
+
+          echo "RPC chain ID verification passed."
+
+
+  # ============================================================
+  # 7. PLACEHOLDER FOR FUTURE PERFORMANCE VERIFICATION
+  # ============================================================
+  #
+  # Not executed yet.
+  #
   performance:
     runs-on: ubuntu-latest
-    name: Performance Test
-    needs: build
+    name: Performance Verification
+    if: false
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Analyze bundle size
-        run: npm run analyze 2>/dev/null || echo "Bundle analyzer not configured"
-
-  # Job 9: Security Scan
-  security:
-    runs-on: ubuntu-latest
-    name: Security Scan
-    needs: build
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Run npm audit
-        run: npm audit --audit-level=moderate 2>/dev/null || echo "npm audit passed"
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-
-      - name: Upload Trivy results
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: 'trivy-results.sarif'
+      - run: echo "Performance verification is not configured yet."
