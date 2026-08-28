@@ -8,6 +8,14 @@ const corsHeaders = {
 
 const MAX_PAYLOAD_LEN = 500;
 
+function serializeError(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  if (typeof err === "object" && err !== null && "message" in err) {
+    return String((err as { message: unknown }).message);
+  }
+  return String(err);
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 200, headers: corsHeaders });
@@ -47,6 +55,7 @@ Deno.serve(async (req: Request) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ||
       Deno.env.get("SUPABASE_SECRET_KEY") ||
       Deno.env.get("SUPABASE_SECRET_KEYS");
+
     if (!supabaseUrl || !supabaseKey) {
       return new Response(
         JSON.stringify({ error: "Missing Supabase URL or service role key" }),
@@ -75,7 +84,7 @@ Deno.serve(async (req: Request) => {
     );
   } catch (err) {
     return new Response(
-      JSON.stringify({ error: err instanceof Error ? err.message : String(err) }),
+      JSON.stringify({ error: serializeError(err) }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
