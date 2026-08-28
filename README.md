@@ -1,4 +1,3 @@
-# meechain-hall
 ## Section — ComPort Hall v1.1
 
 [![Open in Bolt](https://bolt.new/static/open-in-bolt.svg)](https://bolt.new/~/sb1-mdw4e1bj)
@@ -53,5 +52,5 @@ UI และ API ทำงานร่วมกันอย่างถูกต
 - อัปเกรด Real-Time Transport → จาก polling เป็น push  
 
 ---
-[[ ` สร้างขึ้นโดย..MeeChain ทีม ` ]]
+  สร้างขึ้นโดยทีมงาน..MeeChain ..Ⓜ️
 ---
