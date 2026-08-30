@@ -213,6 +213,7 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
         run: |
           npx --yes vercel@latest deploy --prod --yes \
             --token "$VERCEL_TOKEN" \
@@ -226,6 +227,19 @@ jobs:
             --env "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" \
             --env "NEXT_PUBLIC_RPC_URL=${NEXT_PUBLIC_RPC_URL}" \
             --env "NEXT_PUBLIC_CHAIN_ID=${NEXT_PUBLIC_CHAIN_ID}"
+
+      - name: Deployment summary
+        run: |
+          echo "=========================================="
+          echo " MeeChain Production Deployment"
+          echo "=========================================="
+          echo "Branch : ${GITHUB_REF_NAME}"
+          echo "Commit : ${GITHUB_SHA}"
+          echo "Chain  : ${NEXT_PUBLIC_CHAIN_ID}"
+          echo "API    : ${NEXT_PUBLIC_API_URL}"
+          echo "RPC    : ${NEXT_PUBLIC_RPC_URL}"
+          echo "Status : DEPLOYED"
+          echo "=========================================="
 
   # ============================================================
   # 6. DEPLOYMENT VERIFICATION
