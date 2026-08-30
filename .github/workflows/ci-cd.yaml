@@ -177,48 +177,55 @@ jobs:
   deploy-vercel:
     runs-on: ubuntu-latest
     name: Deploy to Vercel
-
-    # Production deployment only depends on real verification.
     needs:
       - build
       - security
-
     if: >
       github.event_name == 'push' &&
       github.ref == 'refs/heads/main'
-
     permissions:
       contents: read
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # เอา full history เผื่อ Vercel CLI ต้องใช้ git metadata
+
+      - name: Verify Vercel secrets are configured
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          missing=0
+          [ -z "$VERCEL_TOKEN" ] && { echo "::error::VERCEL_TOKEN secret ไม่ได้ตั้งค่า"; missing=1; }
+          [ -z "$VERCEL_ORG_ID" ] && { echo "::error::VERCEL_ORG_ID secret ไม่ได้ตั้งค่า"; missing=1; }
+          [ -z "$VERCEL_PROJECT_ID" ] && { echo "::error::VERCEL_PROJECT_ID secret ไม่ได้ตั้งค่า"; missing=1; }
+          if [ "$missing" -eq 1 ]; then
+            echo "::error::ไปตั้งค่าที่ Settings → Secrets and variables → Actions ก่อน"
+            exit 1
+          fi
+          echo "✓ Vercel secrets ครบทั้ง 3 ตัว"
 
       - name: Deploy to Vercel
-        uses: vercel/action@v4
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          production: true
-          environment-variables: |
-            NEXT_PUBLIC_API_URL=${{ env.NEXT_PUBLIC_API_URL }}
-            NEXT_PUBLIC_RPC_URL=${{ env.NEXT_PUBLIC_RPC_URL }}
-            NEXT_PUBLIC_CHAIN_ID=${{ env.NEXT_PUBLIC_CHAIN_ID }}
-
-      - name: Deployment summary
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          echo "=========================================="
-          echo " MeeChain Production Deployment"
-          echo "=========================================="
-          echo "Branch : ${GITHUB_REF_NAME}"
-          echo "Commit : ${GITHUB_SHA}"
-          echo "Chain  : ${NEXT_PUBLIC_CHAIN_ID}"
-          echo "API    : ${NEXT_PUBLIC_API_URL}"
-          echo "RPC    : ${NEXT_PUBLIC_RPC_URL}"
-          echo "Status : DEPLOYED"
-          echo "=========================================="
-
+          npx --yes vercel@latest deploy --prod --yes \
+            --token "$VERCEL_TOKEN" \
+            --scope "$VERCEL_ORG_ID" \
+            --project "$VERCEL_PROJECT_ID" \
+            --meta githubCommitSha="${{ github.sha }}" \
+            --meta githubCommitRef="${{ github.ref_name }}" \
+            --build-env "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" \
+            --build-env "NEXT_PUBLIC_RPC_URL=${NEXT_PUBLIC_RPC_URL}" \
+            --build-env "NEXT_PUBLIC_CHAIN_ID=${NEXT_PUBLIC_CHAIN_ID}" \
+            --env "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" \
+            --env "NEXT_PUBLIC_RPC_URL=${NEXT_PUBLIC_RPC_URL}" \
+            --env "NEXT_PUBLIC_CHAIN_ID=${NEXT_PUBLIC_CHAIN_ID}"
 
   # ============================================================
   # 6. DEPLOYMENT VERIFICATION
@@ -284,7 +291,7 @@ jobs:
   performance:
     runs-on: ubuntu-latest
     name: Performance Verification
-    if: true
+    if: false
 
     steps:
       - run: echo "Performance verification is not configured yet."

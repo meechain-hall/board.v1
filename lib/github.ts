@@ -13,8 +13,8 @@ function githubHeaders() {
 }
 
 function getRepoConfig() {
-  const owner = process.env.GITHUB_OWNER;
-  const repo = process.env.GITHUB_REPO;
+  const owner = process.env.GITHUB_OWNER   || 'meechain-hall';
+  const repo = process.env.GITHUB_REPO     || 'board';
   const branch = process.env.GITHUB_BRANCH || 'main';
   if (!owner || !repo) throw new Error('GITHUB_OWNER หรือ GITHUB_REPO ไม่ได้ตั้งค่า');
   return { owner, repo, branch };

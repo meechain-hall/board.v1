@@ -1,14 +1,42 @@
-import nextVitals from "eslint-config-next/core-web-vitals";
-import { globalIgnores } from "eslint/config";
+import js from "@eslint/js";
+import globals from "globals";
+import tseslint from "typescript-eslint";
+import nextPlugin from "@next/eslint-plugin-next";
 
-export default [
-  // The final config entry is the Next.js Core Web Vitals rule set. The preceding
-  // entries enable React ecosystem rules that are not yet compatible with ESLint 10.
-  nextVitals.at(-1),
-  globalIgnores([".next/**", ".next-dev/**"]),
+export default tseslint.config(
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
-    linterOptions: {
-      reportUnusedDisableDirectives: "warn",
-    },
+    ignores: ["node_modules", ".next", "dist"],
   },
-];
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        project: "./tsconfig.json",
+      },
+      globals: {
+        ...globals.browser,
+        React: "readonly",
+      },
+    },
+    plugins: {
+      "@typescript-eslint": tseslint.plugin,
+      "@next/next": nextPlugin,
+    },
+    rules: {
+      // ✅ TypeScript rules
+      "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+      "@typescript-eslint/explicit-function-return-type": "off",
+
+      // ✅ Next.js rules
+      "@next/next/no-html-link-for-pages": "off",
+      "@next/next/no-img-element": "warn",
+
+      // ✅ General JS rules
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "eqeqeq": ["error", "always"],
+    },
+  }
+);
