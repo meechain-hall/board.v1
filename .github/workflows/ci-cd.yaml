@@ -11,6 +11,10 @@ on:
       - main
       - develop
 
+  # Allows the production-only jobs below to be started from the Actions UI
+  # after selecting the protected main branch.
+  workflow_dispatch:
+
 # Prevent multiple CI runs for the same branch/PR from competing.
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -146,7 +150,8 @@ jobs:
   # 4. E2E VERIFICATION
   # ============================================================
   #
-  # Intentionally NOT part of the production deployment gate yet.
+  # Intentionally NOT part of the production deployment gate yet. These jobs
+  # remain skipped until Playwright/Cypress configuration and test coverage exist.
   #
   # Playwright/Cypress should only become a required gate after
   # the project has real configuration and test coverage.
@@ -181,7 +186,7 @@ jobs:
       - build
       - security
     if: >
-      github.event_name == 'push' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
       github.ref == 'refs/heads/main'
     permissions:
       contents: read
@@ -254,7 +259,7 @@ jobs:
     needs: deploy-vercel
 
     if: >
-      github.event_name == 'push' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
       github.ref == 'refs/heads/main'
 
     steps:
