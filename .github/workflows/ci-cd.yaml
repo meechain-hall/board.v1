@@ -105,7 +105,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Security Scan
     needs: lint-and-typecheck
-
+    permissions:
+      contents: read
+      security-events: write
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
