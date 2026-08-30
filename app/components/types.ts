@@ -66,9 +66,9 @@ export interface TestItem {
   id: string;
   name: string;
   suite: string;
-  status: 'passed' | 'failed' | 'running' | 'pending';
+  status: 'idle' | 'running' | 'passed' | 'failed' | 'not_implemented';
   durationMs: number;
-  details?: string;
+  details: string;
   error?: string;
 }
 
