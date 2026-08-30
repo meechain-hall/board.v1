@@ -152,7 +152,7 @@ jobs:
     runs-on: ubuntu-latest
     name: E2E Tests (Playwright)
     needs: build
-    if: false
+    if: true
 
     steps:
       - run: echo "Playwright verification is not configured yet."
@@ -162,7 +162,7 @@ jobs:
     runs-on: ubuntu-latest
     name: E2E Tests (Cypress)
     needs: build
-    if: false
+    if: true
 
     steps:
       - run: echo "Cypress verification is not configured yet."
@@ -243,7 +243,7 @@ jobs:
             --silent \
             --show-error \
             --max-time 20 \
-            https://app.meechain.live/api/health
+            https://board.meechain.live/api/health
 
           echo
           echo "Production health check passed."
@@ -264,7 +264,7 @@ jobs:
 
           echo "$RESPONSE"
 
-          echo "$RESPONSE" | grep -q '"0x347e"' || {
+          echo "$RESPONSE" | grep -q '"0x344e"' || {
             echo "ERROR: RPC returned unexpected chain ID."
             exit 1
           }
