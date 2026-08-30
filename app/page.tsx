@@ -41,8 +41,8 @@ export default function Home() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = (await res.json()) as AggregatedStats;
       setStats(data);
-    } catch (err: any) {
-      setStatsError(err.message || 'Failed to fetch stats');
+    } catch (err: unknown) {
+      setStatsError(err instanceof Error ? err.message : 'Failed to fetch stats');
     } finally {
       setStatsLoading(false);
     }

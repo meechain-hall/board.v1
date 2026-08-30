@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { FileCode2, Copy, Check, Download, FolderTree, GitBranch, Rocket } from 'lucide-react';
-import { PRODUCTION_FILES, ProductionFile } from '../data/productionCodeFiles';
+import { PRODUCTION_FILES } from '../data/productionCodeFiles';
 
 interface FileContentState {
   content: string;
@@ -84,7 +84,7 @@ export function ProductionCodeHub() {
       const res = await fetch('/api/production/deploy-status');
       const json = await res.json();
       setDeploy(json);
-    } catch (err) {
+    } catch {
       setDeploy(null);
     }
   }, []);

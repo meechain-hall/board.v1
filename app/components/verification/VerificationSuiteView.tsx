@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
 import {
   ShieldCheck,
   CheckCircle2,
@@ -119,9 +118,9 @@ export function VerificationSuiteView() {
           await new Promise((r) => setTimeout(r, 90));
           updatedTests[i].status = 'passed';
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         updatedTests[i].status = 'failed';
-        updatedTests[i].error = err.message;
+        updatedTests[i].error = err instanceof Error ? err.message : 'Test execution failed';
       }
 
       updatedTests[i].durationMs = Math.round(performance.now() - t0);

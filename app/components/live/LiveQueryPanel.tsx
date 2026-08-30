@@ -58,8 +58,8 @@ export function LiveQueryPanel() {
       const data = (await res.json()) as MagicOrbPayload;
       const latency = Math.round(performance.now() - start);
       setOrb({ data, latency, state: 'live', error: null, lastUpdated: new Date().toISOString() });
-    } catch (err: any) {
-      setOrb((prev) => ({ ...prev, state: 'offline', error: err.message || 'Fetch failed', lastUpdated: new Date().toISOString() }));
+    } catch (err: unknown) {
+      setOrb((prev) => ({ ...prev, state: 'offline', error: err instanceof Error ? err.message : 'Fetch failed', lastUpdated: new Date().toISOString() }));
     }
   }, []);
 
@@ -79,8 +79,8 @@ export function LiveQueryPanel() {
       } else {
         setRpc({ result: json.result as Record<string, unknown>, latency, state: 'live', error: null, lastUpdated: new Date().toISOString() });
       }
-    } catch (err: any) {
-      setRpc((prev) => ({ ...prev, state: 'offline', error: err.message || 'Fetch failed', lastUpdated: new Date().toISOString() }));
+    } catch (err: unknown) {
+      setRpc((prev) => ({ ...prev, state: 'offline', error: err instanceof Error ? err.message : 'Fetch failed', lastUpdated: new Date().toISOString() }));
     }
   }, []);
 

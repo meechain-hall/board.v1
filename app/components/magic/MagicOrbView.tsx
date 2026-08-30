@@ -5,15 +5,9 @@ import {
   Zap,
   RefreshCw,
   AlertTriangle,
-  CheckCircle2,
-  Wifi,
   WifiOff,
   Activity,
-  ShieldCheck,
   Code2,
-  Radio,
-  Server,
-  Layers
 } from 'lucide-react';
 import { MagicOrbPayload } from '../types';
 
@@ -21,7 +15,7 @@ interface MagicOrbViewProps {
   chaosMode: boolean;
 }
 
-export function MagicOrbView({ chaosMode }: MagicOrbViewProps) {
+export function MagicOrbView({ chaosMode: _chaosMode }: MagicOrbViewProps) {
   const [data, setData] = useState<MagicOrbPayload | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -82,10 +76,10 @@ export function MagicOrbView({ chaosMode }: MagicOrbViewProps) {
           },
           ...prev.slice(0, 7),
         ]);
-      } catch (err: any) {
+      } catch (err: unknown) {
         attempt++;
         if (attempt >= maxRetries) {
-          setError(err.message || 'MeeChain Magic Orb API Offline');
+          setError(err instanceof Error ? err.message : 'MeeChain Magic Orb API Offline');
         } else {
           await new Promise((r) => setTimeout(r, Math.pow(2, attempt) * 1000));
         }

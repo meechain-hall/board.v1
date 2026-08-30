@@ -83,7 +83,7 @@ export function MagicHallView() {
         throw new Error(err.error || `HTTP ${res.status}`);
       }
       void fetchRelayLog();
-    } catch (e: any) {
+    } catch (e: unknown) {
       setTransmitError(e instanceof Error ? e.message : 'Relay failed');
     } finally {
       setTransmitting(false);
