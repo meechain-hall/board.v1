@@ -57,14 +57,14 @@ export function JsonRpcTerminal() {
         },
         ...prev.slice(0, 19),
       ]);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setResponses((prev) => [
         {
           id,
           method,
           result: null,
           latency: Math.round(performance.now() - start),
-          error: err.message || 'Request failed',
+          error: err instanceof Error ? err.message : 'Request failed',
         },
         ...prev.slice(0, 19),
       ]);
@@ -82,7 +82,7 @@ export function JsonRpcTerminal() {
   const handleCustomSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!customMethod.trim()) return;
-    let parsedParams: unknown[] = [];
+    let parsedParams: unknown[];
     try {
       parsedParams = JSON.parse(customParams || '[]');
     } catch {

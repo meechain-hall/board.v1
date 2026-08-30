@@ -16,7 +16,7 @@ interface StatsMonitorViewProps {
 export function StatsMonitorView({
   stats,
   loading,
-  error,
+  error: _error,
   onRefresh,
 }: StatsMonitorViewProps) {
   const [selectedMethod, setSelectedMethod] = useState<string>('eth_blockNumber');
@@ -42,8 +42,8 @@ export function StatsMonitorView({
       setRpcLatency(Math.round(end - start));
       const data = await res.json();
       setRpcResult(JSON.stringify(data, null, 2));
-    } catch (e: any) {
-      setRpcResult(JSON.stringify({ error: e.message || 'RPC Proxy failed' }, null, 2));
+    } catch (e: unknown) {
+      setRpcResult(JSON.stringify({ error: e instanceof Error ? e.message : 'RPC Proxy failed' }, null, 2));
     } finally {
       setRpcLoading(false);
     }

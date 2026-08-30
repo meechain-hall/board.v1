@@ -14,9 +14,9 @@ export async function POST(request: Request) {
     });
     const data = await response.json();
     return NextResponse.json(data);
-  } catch (err: any) {
+  } catch (err: unknown) {
     return NextResponse.json(
-      { jsonrpc: '2.0', id: null, error: { code: -32603, message: err.message || 'RPC Proxy failed' } },
+      { jsonrpc: '2.0', id: null, error: { code: -32603, message: err instanceof Error ? err.message : 'RPC Proxy failed' } },
       { status: 502 }
     );
   }
