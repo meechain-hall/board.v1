@@ -152,7 +152,7 @@ jobs:
     runs-on: ubuntu-latest
     name: E2E Tests (Playwright)
     needs: build
-    if: true
+    if: false
 
     steps:
       - run: echo "Playwright verification is not configured yet."
@@ -162,7 +162,7 @@ jobs:
     runs-on: ubuntu-latest
     name: E2E Tests (Cypress)
     needs: build
-    if: true
+    if: false
 
     steps:
       - run: echo "Cypress verification is not configured yet."
