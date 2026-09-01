@@ -1,1 +1,2 @@
 - [ESLint CI compatibility](eslint-ci-compatibility.md) — keep Next.js flat config on ESLint 9 and account for existing effect patterns.
+- [Verification Everywhere](verification-everywhere.md) — verification is a shared capability with contextual evidence, never a destination Hall.
