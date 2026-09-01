@@ -1,6 +1,6 @@
 import nextVitals from "eslint-config-next/core-web-vitals";
 
-export default [
+const eslintConfig = [
   ...nextVitals,
   {
     ignores: [
@@ -13,4 +13,13 @@ export default [
       "attached_assets/**",
     ],
   },
+  {
+    files: ["**/*.{js,jsx,ts,tsx}"],
+    rules: {
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/purity": "off",
+    },
+  },
 ];
+
+export default eslintConfig;

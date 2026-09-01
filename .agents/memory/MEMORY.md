@@ -1,0 +1,1 @@
+- [ESLint CI compatibility](eslint-ci-compatibility.md) — keep Next.js flat config on ESLint 9 and account for existing effect patterns.
