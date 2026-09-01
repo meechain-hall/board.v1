@@ -1,10 +1,4 @@
 ## Section — ComPort Hall v1.1
-
-[![Open in Bolt](https://bolt.new/static/open-in-bolt.svg)](https://bolt.new/~/sb1-mdw4e1bj)
-
-  
-<img width="1536" height="1024" alt="copilot_image_1786667127835" src="https://github.com/user-attachments/assets/3d65a026-2030-4e10-ae68-01f004f7c44f" />
-
 ---
 ````
 🏛️ ComPort Hall v1.1 — Shared State Verified
