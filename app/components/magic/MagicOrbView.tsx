@@ -10,6 +10,8 @@ import {
   Code2,
 } from 'lucide-react';
 import { MagicOrbPayload } from '../types';
+import { verifyMagicOrb } from '@/lib/verification';
+import { VerificationSummary } from '../verification/VerificationInspector';
 
 interface MagicOrbViewProps {
   chaosMode: boolean;
@@ -25,6 +27,11 @@ export function MagicOrbView({ chaosMode: _chaosMode }: MagicOrbViewProps) {
   const [showRawJson, setShowRawJson] = useState<boolean>(false);
   const [pulseLog, setPulseLog] = useState<Array<{ id: string; time: string; freq: number; energy: number }>>([]);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const verification = verifyMagicOrb({
+    data,
+    error,
+    checkedAt: lastUpdated?.toISOString(),
+  });
 
   const fetchOrbData = useCallback(async (isBackground = false) => {
     if (!isBackground) setLoading(true);
@@ -259,6 +266,10 @@ export function MagicOrbView({ chaosMode: _chaosMode }: MagicOrbViewProps) {
               {showRawJson ? 'HIDE CONTRACT' : 'INSPECT JSON'}
             </button>
           </div>
+        </div>
+
+        <div className="mt-4 max-w-md">
+          <VerificationSummary result={verification} label="Magic Orb verification" />
         </div>
 
         <AnimatePresence>

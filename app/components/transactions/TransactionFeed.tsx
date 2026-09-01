@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { ArrowLeftRight, RefreshCw, CheckCircle2, Clock, ArrowUpRight } from 'lucide-react';
+import { verifyTransactionFeed } from '@/lib/verification';
+import { VerificationSummary } from '../verification/VerificationInspector';
 
 interface Transaction {
   hash: string;
@@ -68,6 +70,18 @@ export function TransactionFeed() {
     return () => window.clearInterval(interval);
   }, [autoRefresh, fetchTx]);
 
+  const verification = verifyTransactionFeed({
+    data: data
+      ? {
+          count: data.count,
+          mock: data.mock,
+          updatedAt: data.updatedAt,
+          itemCount: data.transactions.length,
+        }
+      : null,
+    error,
+  });
+
   return (
     <div className="space-y-6">
       <div className="bg-[#0a0a0a] border border-slate-800 p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -111,6 +125,9 @@ export function TransactionFeed() {
             REFRESH
           </button>
         </div>
+         <div className="mt-4 w-full max-w-md sm:mt-0 sm:max-w-sm">
+           <VerificationSummary result={verification} label="Transaction verification" />
+         </div>
       </div>
 
       {error && (

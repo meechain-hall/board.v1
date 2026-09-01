@@ -1,11 +1,10 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { Sparkles, Activity, ShieldCheck, FileCode2, Layers3, Terminal, Radio, ArrowLeftRight, Trophy } from 'lucide-react';
+import { Sparkles, Activity, FileCode2, Layers3, Terminal, Radio, ArrowLeftRight, Trophy } from 'lucide-react';
 import { MagicOrbView } from './components/magic/MagicOrbView';
 import { MagicHallView } from './components/magic/MagicHallView';
 import { StatsMonitorView } from './components/stats/StatsMonitorView';
-import { VerificationSuiteView } from './components/verification/VerificationSuiteView';
 import { ProductionCodeHub } from './components/production/ProductionCodeHub';
 import { JsonRpcTerminal } from './components/rpc/JsonRpcTerminal';
 import { LiveQueryPanel } from './components/live/LiveQueryPanel';
@@ -13,7 +12,7 @@ import { TransactionFeed } from './components/transactions/TransactionFeed';
 import { QuestLeaderboard } from './components/leaderboard/QuestLeaderboard';
 import { AggregatedStats } from './components/types';
 
-type TabId = 'orb' | 'hall' | 'stats' | 'rpc' | 'live' | 'tx' | 'leaderboard' | 'verification' | 'production';
+type TabId = 'orb' | 'hall' | 'stats' | 'rpc' | 'live' | 'tx' | 'leaderboard' | 'production';
 
 const TABS: Array<{ id: TabId; label: string; icon: typeof Sparkles }> = [
   { id: 'orb', label: 'Magic Orb', icon: Sparkles },
@@ -23,7 +22,6 @@ const TABS: Array<{ id: TabId; label: string; icon: typeof Sparkles }> = [
   { id: 'live', label: 'Live Query', icon: Radio },
   { id: 'tx', label: 'Transactions', icon: ArrowLeftRight },
   { id: 'leaderboard', label: 'Leaderboard', icon: Trophy },
-  { id: 'verification', label: 'Verification', icon: ShieldCheck },
   { id: 'production', label: 'Production Files', icon: FileCode2 },
 ];
 
@@ -99,7 +97,6 @@ export default function Home() {
           {activeTab === 'live' && <LiveQueryPanel />}
           {activeTab === 'tx' && <TransactionFeed />}
           {activeTab === 'leaderboard' && <QuestLeaderboard />}
-          {activeTab === 'verification' && <VerificationSuiteView />}
           {activeTab === 'production' && <ProductionCodeHub />}
         </div>
 

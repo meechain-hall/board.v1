@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Radio, RefreshCw, Zap, Boxes, Clock, Activity, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
 import { MagicOrbPayload } from '../types';
+import { verifyLiveQuery } from '@/lib/verification';
+import { VerificationSummary } from '../verification/VerificationInspector';
 
 type ConnState = 'idle' | 'live' | 'degraded' | 'offline';
 
@@ -114,6 +116,7 @@ export function LiveQueryPanel() {
   const blockHash = rpc.result ? truncateHash((rpc.result as Record<string, unknown>).hash) : '—';
   const blockTimestamp = rpc.result ? hexToDecimal((rpc.result as Record<string, unknown>).timestamp) : '—';
   const txCount = rpc.result ? String((rpc.result as Record<string, unknown>).transactions ?? '—') : '—';
+  const verification = verifyLiveQuery({ orb, rpc });
 
   return (
     <div className="space-y-6">
@@ -154,6 +157,9 @@ export function LiveQueryPanel() {
             REFRESH
           </button>
         </div>
+         <div className="mt-4 w-full max-w-md sm:mt-0 sm:max-w-sm">
+           <VerificationSummary result={verification} label="Live Query verification" />
+         </div>
       </div>
 
       {/* Two-column grid */}

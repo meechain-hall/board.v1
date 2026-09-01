@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Trophy, RefreshCw, Crown, Medal, Award, Clock } from 'lucide-react';
+import { verifyLeaderboard } from '@/lib/verification';
+import { VerificationSummary } from '../verification/VerificationInspector';
 
 interface LeaderboardEntry {
   rank: number;
@@ -54,6 +56,18 @@ export function QuestLeaderboard() {
     void fetchLeaderboard();
   }, [fetchLeaderboard]);
 
+  const verification = verifyLeaderboard({
+    data: data
+      ? {
+          count: data.count,
+          mock: data.mock,
+          updatedAt: data.updatedAt,
+          itemCount: data.leaderboard.length,
+        }
+      : null,
+    error,
+  });
+
   return (
     <div className="space-y-6">
       <div className="bg-[#0a0a0a] border border-slate-800 p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -92,6 +106,9 @@ export function QuestLeaderboard() {
             REFRESH
           </button>
         </div>
+         <div className="mt-4 w-full max-w-md sm:mt-0 sm:max-w-sm">
+           <VerificationSummary result={verification} label="Leaderboard verification" />
+         </div>
       </div>
 
       {error && (

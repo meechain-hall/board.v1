@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { FileCode2, Copy, Check, Download, FolderTree, GitBranch, Rocket } from 'lucide-react';
 import { PRODUCTION_FILES } from '../data/productionCodeFiles';
+import { verifyProduction } from '@/lib/verification';
+import { VerificationSummary } from '../verification/VerificationInspector';
 
 interface FileContentState {
   content: string;
@@ -56,6 +58,7 @@ export function ProductionCodeHub() {
   const [deploy, setDeploy] = useState<DeployStatus | null>(null);
 
   const selectedMeta = PRODUCTION_FILES.find((f) => f.id === selectedFileId) || PRODUCTION_FILES[0];
+  const verification = verifyProduction({ ci, deploy });
 
   const fetchFileContent = useCallback(async (id: string) => {
     setFileState((s) => ({ ...s, loading: true, error: null }));
@@ -184,6 +187,9 @@ export function ProductionCodeHub() {
               </span>
             )}
           </div>
+        </div>
+        <div className="mt-4 max-w-md">
+          <VerificationSummary result={verification} label="Production verification" />
         </div>
       </div>
 

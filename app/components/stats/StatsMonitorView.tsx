@@ -5,6 +5,8 @@ import {
   Send,
 } from 'lucide-react';
 import { AggregatedStats } from '../types';
+import { verifyStats } from '@/lib/verification';
+import { VerificationSummary } from '../verification/VerificationInspector';
 
 interface StatsMonitorViewProps {
   stats: AggregatedStats | null;
@@ -16,7 +18,7 @@ interface StatsMonitorViewProps {
 export function StatsMonitorView({
   stats,
   loading,
-  error: _error,
+  error,
   onRefresh,
 }: StatsMonitorViewProps) {
   const [selectedMethod, setSelectedMethod] = useState<string>('eth_blockNumber');
@@ -53,6 +55,13 @@ export function StatsMonitorView({
     executeRpcCall('eth_blockNumber');
   }, []);
 
+  const verification = verifyStats({
+    stats,
+    rpcResult,
+    rpcLatency,
+    error,
+  });
+
   return (
     <div className="space-y-6">
       <div className="bg-[#0a0a0a] border border-slate-800 p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -81,6 +90,9 @@ export function StatsMonitorView({
             <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
             REFRESH
           </button>
+        </div>
+        <div className="mt-4 w-full max-w-md sm:mt-0 sm:max-w-sm">
+          <VerificationSummary result={verification} label="Telemetry verification" />
         </div>
       </div>
 

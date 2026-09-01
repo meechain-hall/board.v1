@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { Terminal, Send, RefreshCw, Trash2 } from 'lucide-react';
+import { verifyRpc } from '@/lib/verification';
+import { VerificationSummary } from '../verification/VerificationInspector';
 
 interface RpcResponse {
   id: number;
@@ -9,6 +11,7 @@ interface RpcResponse {
   result: unknown;
   latency: number;
   error?: string;
+  checkedAt: string;
 }
 
 const PRESET_METHODS = [
@@ -54,6 +57,7 @@ export function JsonRpcTerminal() {
           result: data.result ?? data,
           latency,
           error: data.error ? JSON.stringify(data.error) : undefined,
+          checkedAt: new Date().toISOString(),
         },
         ...prev.slice(0, 19),
       ]);
@@ -65,6 +69,7 @@ export function JsonRpcTerminal() {
           result: null,
           latency: Math.round(performance.now() - start),
           error: err instanceof Error ? err.message : 'Request failed',
+          checkedAt: new Date().toISOString(),
         },
         ...prev.slice(0, 19),
       ]);
@@ -102,6 +107,8 @@ export function JsonRpcTerminal() {
     return JSON.stringify(value, null, 2);
   };
 
+  const verification = verifyRpc({ latest: responses[0] || null });
+
   return (
     <div className="space-y-6">
       <div className="bg-[#0a0a0a] border border-slate-800 rounded-2xl p-5 sm:p-6 relative overflow-hidden shadow-2xl">
@@ -134,6 +141,10 @@ export function JsonRpcTerminal() {
               {responses.length} QUERIES
             </span>
           </div>
+        </div>
+
+        <div className="mt-4 max-w-md">
+          <VerificationSummary result={verification} label="RPC verification" />
         </div>
 
         <div className="mt-5 flex flex-wrap gap-1.5">

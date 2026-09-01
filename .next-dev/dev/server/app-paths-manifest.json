@@ -1,3 +1,5 @@
 {
+  "/api/magic/orb/route": "app/api/magic/orb/route.js",
+  "/api/stats/route": "app/api/stats/route.js",
   "/page": "app/page.js"
 }

@@ -14,6 +14,8 @@ import {
   HelpCircle,
 } from 'lucide-react';
 import { ComPortBridgeItem, RelayLogEntry } from '../types';
+import { verifyComPorts } from '@/lib/verification';
+import { VerificationSummary } from '../verification/VerificationInspector';
 
 export function MagicHallView() {
   const [comports, setComports] = useState<ComPortBridgeItem[]>([]);
@@ -23,6 +25,8 @@ export function MagicHallView() {
   const [relayLog, setRelayLog] = useState<RelayLogEntry[]>([]);
   const [transmitting, setTransmitting] = useState(false);
   const [transmitError, setTransmitError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [lastChecked, setLastChecked] = useState<string | null>(null);
 
   const fetchComports = useCallback(async () => {
     try {
@@ -30,12 +34,19 @@ export function MagicHallView() {
       if (res.ok) {
         const data = await res.json();
         setComports(data.ports || []);
+        setLoadError(null);
+        setLastChecked(new Date().toISOString());
         if (data.ports?.length > 0 && !selectedPort) {
           setSelectedPort(data.ports[0].id);
         }
+      } else {
+        setLoadError(`HTTP ${res.status}`);
+        setLastChecked(new Date().toISOString());
       }
     } catch (e) {
       console.error(e);
+      setLoadError(e instanceof Error ? e.message : 'Control Plane request failed');
+      setLastChecked(new Date().toISOString());
     } finally {
       setLoading(false);
     }
@@ -109,6 +120,12 @@ export function MagicHallView() {
     return <WifiOff className="w-3 h-3 text-rose-400" />;
   };
 
+  const verification = verifyComPorts({
+    ports: comports,
+    checkedAt: lastChecked,
+    error: loadError,
+  });
+
   return (
     <div className="space-y-6">
       <div className="bg-[#0a0a0a] border border-slate-800 rounded-2xl p-6 relative overflow-hidden">
@@ -130,6 +147,10 @@ export function MagicHallView() {
           <div className="p-2.5 bg-[#050505] border border-slate-800 rounded-xl text-xs font-serif italic text-slate-300">
             &quot;Bridge over walls — non-centric interoperability&quot;
           </div>
+        </div>
+
+        <div className="mt-4 max-w-md">
+          <VerificationSummary result={verification} label="ComPort verification" />
         </div>
 
         <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
