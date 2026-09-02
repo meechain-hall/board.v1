@@ -1,7 +1,12 @@
 modules = ["nodejs-22"]
 
+[[ports]]
+localPort = 5000
+externalPort = 80
+
 [nix]
 channel = "stable-25_05"
+packages = ["timetrap"]
 
 [workflows]
 runButton = "Project"
@@ -30,3 +35,17 @@ outputType = "webview"
 [deployment]
 deploymentTarget = "static"
 publicDir = ".next"
+
+[userenv]
+
+[userenv.shared]
+GITHUB_TOKEN = "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"
+GITHUB_API = "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"
+GITHUB_OWNER = "meechain-hall"
+GITHUB_REPO = "board"
+NEXT_PUBLIC_RPC_URL = "https://rpc.meechain.live"
+NEXT_PUBLIC_API_URL = "https://api.meechain.live"
+NEXT_PUBLIC_CHAIN_ID = "13390"
+VERCEL_ORG_ID = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im1yay00MzAyZWMxYjY3MGY0OGE5OGFkNjFkYWRlNGEyM2JlNyJ9.eyJpc3MiOiJodHRwczovL29pZGMudmVyY2VsLmNvbS9tZWUtY2hhaW4tbWFnaWMiLCJzdWIiOiJvd25lcjptZWUtY2hhaW4tbWFnaWM6cHJvamVjdDptZWVjaGFpbi1kYXNoYm9hcmQ6ZW52aXJvbm1lbnQ6ZGV2ZWxvcG1lbnQiLCJzY29wZSI6Im93bmVyOm1lZS1jaGFpbi1tYWdpYzpwcm9qZWN0Om1lZWNoYWluLWRhc2hib2FyZDplbnZpcm9ubWVudDpkZXZlbG9wbWVudCIsImF1ZCI6Imh0dHBzOi8vdmVyY2VsLmNvbS9tZWUtY2hhaW4tbWFnaWMiLCJvd25lciI6Im1lZS1jaGFpbi1tYWdpYyIsIm93bmVyX2lkIjoidGVhbV82c1B1MzQzVUk1ekNFQ0lndXhFRUpTdEsiLCJwcm9qZWN0IjoibWVlY2hhaW4tZGFzaGJvYXJkIiwicHJvamVjdF9pZCI6InByal9ZMWJ0V2JtY3g0azNsV2tqeTZrYUFkTzlGT09JIiwiZW52aXJvbm1lbnQiOiJkZXZlbG9wbWVudCIsInBsYW4iOiJob2JieSIsInVzZXJfaWQiOiJMalRKck45cUJ1eHNCUWd1bWluTXJDQksiLCJjbGllbnRfaWQiOiJjbF9IWXlPUEJOdEZNZkhoYVVuOUw0UVBmVFp6NlRQNDdicCIsIm5iZiI6MTc4NzQ1MDQwMCwiaWF0IjoxNzg3NDUwNDAwLCJleHAiOjE3ODc0OTM2MDB9.O2GbhxqVvIX5WAG1FpQLZ0pTpSaPCwkc8K_nTewrFBT03Xa3na8TU7PAuS1XsXZIOmCCQdikHfjv8mwNaye-S87jsD0WVYePUn8XY0NOIS58woEib0nre2mkXFtaTj8A7unYK3ZVBHzCzgp7KCIyAvhWo--n13pqavaAftZmKJXUyzeeOFwQj8D7AhhLg1jD6XpEHrzbyj7KjMNUhoJfyTZP3L2wzcLIKI1aTphGaE3d8gA8qK6HwNu-8VPpc5lmf49SUQIHwHlao8PbyBbusQ2PIuJVyW5NgoFYl0ShRX8nUM8K2IRW4kwDZ-ftutx9inMXDmddkj6MSIdmkWS8_w"
+VERCEL_PROJECT_ID = "prj_q0l8tbF3wuXwPfZQ8rhCj0Q46wLE "
+VERCEL_TOKEN = " vcp_3GvYYqmsPNSRVh8SK5fZtag4lcjZ7Ev53l2bIF9lLna46IxOnx3nrZVl"

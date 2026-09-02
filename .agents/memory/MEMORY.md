@@ -2,3 +2,4 @@
 - [Verification Everywhere](verification-everywhere.md) — verification is a shared capability with contextual evidence, never a destination Hall.
 - [Next.js preview origins](next-preview-origins.md) — Next 16 previews need 127.0.0.1 in allowedDevOrigins for dev assets and HMR.
 - [GitHub Actions secret boundary](github-actions-secret-boundary.md) — Replit Secrets do not populate GitHub Actions secrets, and dispatch credentials are validated separately.
+- [Production verification dependencies](production-verification-dependencies.md) — Vercel can serve while VM/RPC is offline; verify upstream health and chain ID separately.
