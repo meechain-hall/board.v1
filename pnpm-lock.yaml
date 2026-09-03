@@ -146,6 +146,9 @@ importers:
       next-themes:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      node22:
+        specifier: ^1.0.0
+        version: 1.0.0
       postcss:
         specifier: 8.5.25
         version: 8.5.25
@@ -2566,6 +2569,9 @@ packages:
   node-releases@2.0.54:
     resolution: {integrity: sha512-YHs7BmmcsdAI5Ozuf8JZo6PT0mv2GIWC9vMfvUC3dp65M8hn7Ux8CPL+2oBI7juNuj9d0ndhTcznq2ODBps9cQ==}
     engines: {node: '>=18'}
+
+  node22@1.0.0:
+    resolution: {integrity: sha512-ezGslkcI5raXKVhjA3mhU0M1OCk3W5fzPO2sLroKETlMJHFGXrUi7sTRAVCd4ux1F0jQoKmTyDqqY/93JVbTCA==}
 
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
@@ -5685,6 +5691,8 @@ snapshots:
       semver: 6.3.1
 
   node-releases@2.0.54: {}
+
+  node22@1.0.0: {}
 
   normalize-path@3.0.0: {}
 
