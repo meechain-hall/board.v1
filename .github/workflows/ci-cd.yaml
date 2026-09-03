@@ -44,17 +44,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
-          cache: 'npm'
+          node-version: '22'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Run ESLint
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Run TypeScript check
-        run: npm run typecheck
+        run: pnpm run typecheck
 
 
   # ============================================================
@@ -72,22 +72,22 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
-          cache: 'npm'
+          node-version: '22'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Verify environment
         run: |
           echo "Node: $(node --version)"
-          echo "npm:  $(npm --version)"
+          echo "pnpm:  $(pnpm --version)"
           echo "NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}"
           echo "NEXT_PUBLIC_RPC_URL: ${NEXT_PUBLIC_RPC_URL}"
           echo "NEXT_PUBLIC_CHAIN_ID: ${NEXT_PUBLIC_CHAIN_ID}"
 
       - name: Build Next.js
-        run: npm run build
+        run: pnpm run build
         env:
           NEXT_PUBLIC_API_URL: ${{ env.NEXT_PUBLIC_API_URL }}
           NEXT_PUBLIC_RPC_URL: ${{ env.NEXT_PUBLIC_RPC_URL }}
@@ -120,15 +120,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
-          cache: 'npm'
+          node-version: '22'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
-      # Do not hide npm audit failures.
-      - name: Run npm audit
-        run: npm audit --audit-level=moderate
+      # Do not hide pnpm audit failures.
+      - name: Run pnpm audit
+        run: pnpm audit --audit-level=moderate
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@v0.36.0
@@ -160,7 +160,7 @@ jobs:
     runs-on: ubuntu-latest
     name: E2E Tests (Playwright)
     needs: build
-    if: true
+    if: false
 
     steps:
       - run: echo "Playwright verification is not configured yet."
@@ -170,7 +170,7 @@ jobs:
     runs-on: ubuntu-latest
     name: E2E Tests (Cypress)
     needs: build
-    if: true
+    if: false
 
     steps:
       - run: echo "Cypress verification is not configured yet."
@@ -310,7 +310,7 @@ jobs:
   performance:
     runs-on: ubuntu-latest
     name: Performance Verification
-    if: true
+    if: false
 
     steps:
       - run: echo "Performance verification is not configured yet."
