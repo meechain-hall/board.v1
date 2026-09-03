@@ -1,7 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+node_modules/
 /.pnp
 .pnp.js
 
@@ -12,6 +12,8 @@
 /.next/
 /.next-dev/
 /out/
+*.tsbuildinfo
+next-env.d.ts
 
 # production
 /build
@@ -20,22 +22,24 @@
 .DS_Store
 *.pem
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
 # local env files
 .env
 .env*.local
+.env.production
 
-# vercel
-.vercel
+# Vercel
+.vercel/
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-.env*
-.env.production 
+# Replit
+attached_assets/
 
+# Bolt
+.agents/
+
+# IDE
 .idea/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
