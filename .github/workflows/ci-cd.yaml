@@ -53,7 +53,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install -g pnpm
        
       - name: Run ESLint
         run: pnpm run lint
@@ -86,7 +86,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install -g pnpm
 
       - name: Verify environment
         run: |
@@ -139,7 +139,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install -g pnpm
 
       # Do not hide pnpm audit failures.
       - name: Run pnpm audit
