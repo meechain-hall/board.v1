@@ -1,5 +1,4 @@
 name: CI/CD Pipeline
-
 on:
   push:
     branches:
@@ -11,11 +10,8 @@ on:
       - main
       - develop
 
-  # Allows the production-only jobs below to be started from the Actions UI
-  # after selecting the protected main branch.
   workflow_dispatch:
 
-# Prevent multiple CI runs for the same branch/PR from competing.
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -40,21 +36,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-       
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.26.1
-             
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'pnpm'
+
+      - name: Enable pnpm via Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.26.1 --activate
 
       - name: Install dependencies
-        run: pnpm install -g pnpm
-       
+        run: pnpm install --frozen-lockfile
+
       - name: Run ESLint
         run: pnpm run lint
 
@@ -74,19 +69,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.26.1
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'pnpm'
+
+      - name: Enable pnpm via Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.26.1 --activate
 
       - name: Install dependencies
-        run: pnpm install -g pnpm
+        run: pnpm install --frozen-lockfile
 
       - name: Verify environment
         run: |
@@ -122,26 +116,24 @@ jobs:
     permissions:
       contents: read
       security-events: write
-      
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.26.1
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'pnpm'
+
+      - name: Enable pnpm via Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.26.1 --activate
 
       - name: Install dependencies
-        run: pnpm install -g pnpm
+        run: pnpm install --frozen-lockfile
 
-      # Do not hide pnpm audit failures.
       - name: Run pnpm audit
         run: pnpm audit --audit-level=moderate
 
@@ -164,13 +156,6 @@ jobs:
   # ============================================================
   # 4. E2E VERIFICATION
   # ============================================================
-  #
-  # Intentionally NOT part of the production deployment gate yet. These jobs
-  # remain skipped until Playwright/Cypress configuration and test coverage exist.
-  #
-  # Playwright/Cypress should only become a required gate after
-  # the project has real configuration and test coverage.
-  #
   e2e-playwright:
     runs-on: ubuntu-latest
     name: E2E Tests (Playwright)
@@ -210,7 +195,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # เอา full history เผื่อ Vercel CLI ต้องใช้ git metadata
+          fetch-depth: 0
 
       - name: Verify Vercel secrets are configured
         env:
@@ -233,7 +218,6 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
         run: |
           npx --yes vercel@latest deploy --prod --yes \
             --token "$VERCEL_TOKEN" \
@@ -264,10 +248,6 @@ jobs:
   # ============================================================
   # 6. DEPLOYMENT VERIFICATION
   # ============================================================
-  #
-  # Lightweight post-deployment verification.
-  # This does not replace the Production Code Hub.
-  #
   production-verify:
     runs-on: ubuntu-latest
     name: Production Verification
@@ -319,9 +299,6 @@ jobs:
   # ============================================================
   # 7. PLACEHOLDER FOR FUTURE PERFORMANCE VERIFICATION
   # ============================================================
-  #
-  # Not executed yet.
-  #
   performance:
     runs-on: ubuntu-latest
     name: Performance Verification
