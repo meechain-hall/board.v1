@@ -1,4 +1,5 @@
 name: CI/CD Pipeline
+
 on:
   push:
     branches:
@@ -26,9 +27,6 @@ permissions:
 
 jobs:
 
-  # ============================================================
-  # 1. LINT & TYPECHECK
-  # ============================================================
   lint-and-typecheck:
     runs-on: ubuntu-latest
     name: Lint & Type Check
@@ -57,9 +55,6 @@ jobs:
         run: pnpm run typecheck
 
 
-  # ============================================================
-  # 2. BUILD NEXT.JS
-  # ============================================================
   build:
     runs-on: ubuntu-latest
     name: Build Next.js
@@ -106,9 +101,6 @@ jobs:
           retention-days: 7
 
 
-  # ============================================================
-  # 3. SECURITY SCAN
-  # ============================================================
   security:
     runs-on: ubuntu-latest
     name: Security Scan
@@ -153,9 +145,6 @@ jobs:
           sarif_file: trivy-results.sarif
 
 
-  # ============================================================
-  # 4. E2E VERIFICATION
-  # ============================================================
   e2e-playwright:
     runs-on: ubuntu-latest
     name: E2E Tests (Playwright)
@@ -176,9 +165,6 @@ jobs:
       - run: echo "Cypress verification is not configured yet."
 
 
-  # ============================================================
-  # 5. DEPLOY TO VERCEL
-  # ============================================================
   deploy-vercel:
     runs-on: ubuntu-latest
     name: Deploy to Vercel
@@ -245,9 +231,7 @@ jobs:
           echo "Status : DEPLOYED"
           echo "=========================================="
 
-  # ============================================================
-  # 6. DEPLOYMENT VERIFICATION
-  # ============================================================
+
   production-verify:
     runs-on: ubuntu-latest
     name: Production Verification
@@ -296,9 +280,6 @@ jobs:
           echo "RPC chain ID verification passed."
 
 
-  # ============================================================
-  # 7. PLACEHOLDER FOR FUTURE PERFORMANCE VERIFICATION
-  # ============================================================
   performance:
     runs-on: ubuntu-latest
     name: Performance Verification
