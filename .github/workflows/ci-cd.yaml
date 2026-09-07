@@ -283,3 +283,281 @@ jobs:
     steps:
       - run: echo "Performance verification is not configured yet."
 
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+  pull_request:
+    branches:
+      - main
+      - develop
+
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL || 'https://api.meechain.live' }}
+  NEXT_PUBLIC_RPC_URL: ${{ secrets.NEXT_PUBLIC_RPC_URL || 'https://rpc.meechain.live' }}
+  NEXT_PUBLIC_CHAIN_ID: ${{ secrets.NEXT_PUBLIC_CHAIN_ID || '13390' }}
+
+permissions:
+  contents: read
+
+jobs:
+
+  lint-and-typecheck:
+    runs-on: ubuntu-latest
+    name: Lint & Type Check
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: '22'
+
+      - name: Enable pnpm via Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.26.1 --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run ESLint
+        run: pnpm run lint
+
+      - name: Run TypeScript check
+        run: pnpm run typecheck
+
+
+  build:
+    runs-on: ubuntu-latest
+    name: Build Next.js
+    needs: lint-and-typecheck
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: '22'
+
+      - name: Enable pnpm via Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.26.1 --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify environment
+        run: |
+          echo "Node: $(node --version)"
+          echo "pnpm:  $(pnpm --version)"
+          echo "NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}"
+          echo "NEXT_PUBLIC_RPC_URL: ${NEXT_PUBLIC_RPC_URL}"
+          echo "NEXT_PUBLIC_CHAIN_ID: ${NEXT_PUBLIC_CHAIN_ID}"
+
+      - name: Build Next.js
+        run: pnpm run build
+        env:
+          NEXT_PUBLIC_API_URL: ${{ env.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_RPC_URL: ${{ env.NEXT_PUBLIC_RPC_URL }}
+          NEXT_PUBLIC_CHAIN_ID: ${{ env.NEXT_PUBLIC_CHAIN_ID }}
+
+      - name: Upload build artifacts
+        if: success()
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: nextjs-build
+          path: .next
+          retention-days: 7
+
+
+  security:
+    runs-on: ubuntu-latest
+    name: Security Scan
+    needs: lint-and-typecheck
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: '22'
+
+      - name: Enable pnpm via Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.26.1 --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run pnpm audit
+        run: pnpm audit --audit-level=moderate
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: sarif
+          output: trivy-results.sarif
+          ignore-unfixed: true
+
+      - name: Upload Trivy results
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3.27.0
+        with:
+          sarif_file: trivy-results.sarif
+
+
+  e2e-playwright:
+    runs-on: ubuntu-latest
+    name: E2E Tests (Playwright)
+    needs: build
+    if: false
+
+    steps:
+      - run: echo "Playwright verification is not configured yet."
+
+
+  e2e-cypress:
+    runs-on: ubuntu-latest
+    name: E2E Tests (Cypress)
+    needs: build
+    if: false
+
+    steps:
+      - run: echo "Cypress verification is not configured yet."
+
+  deploy-vercel:
+    runs-on: ubuntu-latest
+    name: Deploy to Vercel
+    needs:
+      - build
+      - security
+    if: >
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm ci
+
+      - name: Install Vercel CLI
+        run: pnpm install --global vercel@latest
+
+      - name: Verify token scope
+        run: npx vercel whoami --token="${{ secrets.VERCEL_TOKEN }}"
+
+      - name: Pull Vercel project config
+        run: npx vercel pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
+
+      - name: Build project artifacts
+        run: npx vercel build --prod --token="${{ secrets.VERCEL_TOKEN }}"
+        env:
+          NEXT_PUBLIC_API_URL: ${{ env.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_RPC_URL: ${{ env.NEXT_PUBLIC_RPC_URL }}
+          NEXT_PUBLIC_CHAIN_ID: ${{ env.NEXT_PUBLIC_CHAIN_ID }}
+
+      - name: Deploy to Vercel (prebuilt)
+        id: deploy
+        run: |
+          DEPLOY_URL=$(npx vercel deploy --prebuilt --prod --token="${{ secrets.VERCEL_TOKEN }}")
+          echo "url=$DEPLOY_URL" >> "$GITHUB_OUTPUT"
+          echo "Deployed: $DEPLOY_URL"
+
+      - name: Deployment summary
+        run: |
+          echo "=========================================="
+          echo " MeeChain Production Deployment"
+          echo "=========================================="
+          echo "Branch : ${GITHUB_REF_NAME}"
+          echo "Commit : ${GITHUB_SHA}"
+          echo "Chain  : ${NEXT_PUBLIC_CHAIN_ID}"
+          echo "URL    : ${{ steps.deploy.outputs.url }}"
+          echo "Status : DEPLOYED"
+          echo "=========================================="
+
+  production-verify:
+    runs-on: ubuntu-latest
+    name: Production Verification
+    needs: deploy-vercel
+
+    if: >
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Verify production API
+        run: |
+          echo "Checking production health endpoint..."
+
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --max-time 20 \
+            https://board.meechain.live/api/health
+
+          echo
+          echo "Production health check passed."
+
+      - name: Verify RPC endpoint
+        run: |
+          echo "Checking MeeChain RPC..."
+
+          RESPONSE=$(curl \
+            --fail \
+            --silent \
+            --show-error \
+            --max-time 20 \
+            -X POST \
+            -H "Content-Type: application/json" \
+            --data '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}' \
+            https://rpc.meechain.live)
+
+          echo "$RESPONSE"
+
+          echo "$RESPONSE" | grep -q '"0x344e"' || {
+            echo "ERROR: RPC returned unexpected chain ID."
+            exit 1
+          }
+
+          echo "RPC chain ID verification passed."
+
+
+  performance:
