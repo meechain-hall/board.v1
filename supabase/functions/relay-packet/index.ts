@@ -16,16 +16,20 @@ function serializeError(err: unknown): string {
   return String(err);
 }
 
+function jsonResponse(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 200, headers: corsHeaders });
   }
 
   if (req.method !== "POST") {
-    return new Response(
-      JSON.stringify({ error: "Method not allowed" }),
-      { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return jsonResponse({ error: "Method not allowed" }, 405);
   }
 
   try {
@@ -37,17 +41,11 @@ Deno.serve(async (req: Request) => {
       typeof to !== "string" || !to.trim() ||
       typeof payload !== "string" || !payload.trim()
     ) {
-      return new Response(
-        JSON.stringify({ error: "from, to, and payload must be non-empty strings" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return jsonResponse({ error: "from, to, and payload must be non-empty strings" }, 400);
     }
 
     if (payload.length > MAX_PAYLOAD_LEN) {
-      return new Response(
-        JSON.stringify({ error: `payload exceeds ${MAX_PAYLOAD_LEN} characters` }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return jsonResponse({ error: `payload exceeds ${MAX_PAYLOAD_LEN} characters` }, 400);
     }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL") || Deno.env.get("NEXT_PUBLIC_SUPABASE_URL");
@@ -57,10 +55,7 @@ Deno.serve(async (req: Request) => {
       Deno.env.get("SUPABASE_SECRET_KEYS");
 
     if (!supabaseUrl || !supabaseKey) {
-      return new Response(
-        JSON.stringify({ error: "Missing Supabase URL or service role key" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return jsonResponse({ error: "Missing Supabase URL or service role key" }, 500);
     }
 
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -78,14 +73,14 @@ Deno.serve(async (req: Request) => {
 
     if (error) throw error;
 
-    return new Response(
-      JSON.stringify({ ok: true, id: data.id, timestamp: data.created_at }),
-      { status: 201, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return jsonResponse({ ok: true, id: data.id, timestamp: data.created_at }, 201);
   } catch (err) {
-    return new Response(
-      JSON.stringify({ error: serializeError(err) }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    // log server-side for debugging, but return sanitized message
+    console.error("relay-packet error:", err);
+    let status = 500;
+    if (err && typeof err === "object" && "status" in err && typeof (err as any).status === "number") {
+      status = (err as any).status;
+    }
+    return jsonResponse({ error: serializeError(err) }, status);
   }
 });
