@@ -1,13 +1,13 @@
 function vercelHeaders() {
-  const token = process.env.VERCEL_API_TOKEN;
-  if (!token) throw new Error('VERCEL_API_TOKEN ไม่ได้ตั้งค่า');
+  const token = process.env.VERCEL_TOKEN;
+  if (!token) throw new Error('VERCEL_TOKEN ไม่ได้ตั้งค่า');
   return { Authorization: `Bearer ${token}` };
 }
 
 export async function getLatestDeployment() {
   const projectId = process.env.VERCEL_PROJECT_ID;
   if (!projectId) throw new Error('VERCEL_PROJECT_ID ไม่ได้ตั้งค่า');
-  const teamId = process.env.VERCEL_TEAM_ID; // optional ตามที่ตกลง
+  const teamId = process.env.VERCEL_ORG_ID; // optional ตามที่ตกลง
 
   const params = new URLSearchParams({ projectId, limit: '1', target: 'production' });
   if (teamId) params.set('teamId', teamId);
