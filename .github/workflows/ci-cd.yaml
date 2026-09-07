@@ -164,7 +164,6 @@ jobs:
     steps:
       - run: echo "Cypress verification is not configured yet."
 
-
   deploy-vercel:
     runs-on: ubuntu-latest
     name: Deploy to Vercel
@@ -172,51 +171,49 @@ jobs:
       - build
       - security
     if: >
-      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      github.event_name == 'push' &&
       github.ref == 'refs/heads/main'
     permissions:
       contents: read
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.2.0
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          fetch-depth: 0
+          node-version: '20'
+          cache: 'npm'
 
-      - name: Verify Vercel secrets are configured
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: |
-          missing=0
-          [ -z "$VERCEL_TOKEN" ] && { echo "::error::VERCEL_TOKEN secret ไม่ได้ตั้งค่า"; missing=1; }
-          [ -z "$VERCEL_ORG_ID" ] && { echo "::error::VERCEL_ORG_ID secret ไม่ได้ตั้งค่า"; missing=1; }
-          [ -z "$VERCEL_PROJECT_ID" ] && { echo "::error::VERCEL_PROJECT_ID secret ไม่ได้ตั้งค่า"; missing=1; }
-          if [ "$missing" -eq 1 ]; then
-            echo "::error::ไปตั้งค่าที่ Settings → Secrets and variables → Actions ก่อน"
-            exit 1
-          fi
-          echo "✓ Vercel secrets ครบทั้ง 3 ตัว"
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Deploy to Vercel
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Verify token scope
+        run: npx vercel whoami --token="${{ secrets.VERCEL_TOKEN }}"
+
+      - name: Pull Vercel project config
+        run: npx vercel pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
+
+      - name: Build project artifacts
+        run: npx vercel build --prod --token="${{ secrets.VERCEL_TOKEN }}"
         env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          NEXT_PUBLIC_API_URL: ${{ env.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_RPC_URL: ${{ env.NEXT_PUBLIC_RPC_URL }}
+          NEXT_PUBLIC_CHAIN_ID: ${{ env.NEXT_PUBLIC_CHAIN_ID }}
+
+      - name: Deploy to Vercel (prebuilt)
+        id: deploy
         run: |
-          npx --yes vercel@latest deploy --prod --yes \
-            --token "$VERCEL_TOKEN" \
-            --scope "$VERCEL_ORG_ID" \
-            --project "$VERCEL_PROJECT_ID" \
-            --meta githubCommitSha="${{ github.sha }}" \
-            --meta githubCommitRef="${{ github.ref_name }}" \
-            --build-env "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" \
-            --build-env "NEXT_PUBLIC_RPC_URL=${NEXT_PUBLIC_RPC_URL}" \
-            --build-env "NEXT_PUBLIC_CHAIN_ID=${NEXT_PUBLIC_CHAIN_ID}" \
-            --env "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" \
-            --env "NEXT_PUBLIC_RPC_URL=${NEXT_PUBLIC_RPC_URL}" \
-            --env "NEXT_PUBLIC_CHAIN_ID=${NEXT_PUBLIC_CHAIN_ID}"
+          DEPLOY_URL=$(npx vercel deploy --prebuilt --prod --token="${{ secrets.VERCEL_TOKEN }}")
+          echo "url=$DEPLOY_URL" >> "$GITHUB_OUTPUT"
+          echo "Deployed: $DEPLOY_URL"
 
       - name: Deployment summary
         run: |
@@ -226,11 +223,9 @@ jobs:
           echo "Branch : ${GITHUB_REF_NAME}"
           echo "Commit : ${GITHUB_SHA}"
           echo "Chain  : ${NEXT_PUBLIC_CHAIN_ID}"
-          echo "API    : ${NEXT_PUBLIC_API_URL}"
-          echo "RPC    : ${NEXT_PUBLIC_RPC_URL}"
+          echo "URL    : ${{ steps.deploy.outputs.url }}"
           echo "Status : DEPLOYED"
           echo "=========================================="
-
 
   production-verify:
     runs-on: ubuntu-latest
