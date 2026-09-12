@@ -54,7 +54,6 @@ jobs:
       - name: Run TypeScript check
         run: pnpm run typecheck
 
-
   build:
     runs-on: ubuntu-latest
     name: Build Next.js
@@ -100,7 +99,6 @@ jobs:
           path: .next
           retention-days: 7
 
-
   security:
     runs-on: ubuntu-latest
     name: Security Scan
@@ -143,8 +141,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3.27.0
         with:
           sarif_file: trivy-results.sarif
-
-
+          
   e2e-playwright:
     runs-on: ubuntu-latest
     name: E2E Tests (Playwright)
@@ -153,7 +150,6 @@ jobs:
 
     steps:
       - run: echo "Playwright verification is not configured yet."
-
 
   e2e-cypress:
     runs-on: ubuntu-latest
@@ -269,7 +265,6 @@ jobs:
           }
 
           echo "RPC chain ID verification passed."
-
 
   performance:
     runs-on: ubuntu-latest
