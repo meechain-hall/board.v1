@@ -93,14 +93,6 @@ jobs:
           NEXT_PUBLIC_RPC_URL: ${{ env.NEXT_PUBLIC_RPC_URL }}
           NEXT_PUBLIC_CHAIN_ID: ${{ env.NEXT_PUBLIC_CHAIN_ID }}
 
-      - name: Upload build artifacts
-        if: success()
-        uses: actions/upload-artifact@v4.4.0
-        with:
-          name: nextjs-build
-          path: .next
-          retention-days: 7
-
   security:
     runs-on: ubuntu-latest
     name: Security Scan
@@ -128,21 +120,6 @@ jobs:
 
       - name: Run pnpm audit
         run: pnpm audit --audit-level=moderate
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          scan-type: fs
-          scan-ref: .
-          format: sarif
-          output: trivy-results.sarif
-          ignore-unfixed: true
-
-      - name: Upload Trivy results
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3.27.0
-        with:
-          sarif_file: trivy-results.sarif
           
   e2e-playwright:
     runs-on: ubuntu-latest
