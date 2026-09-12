@@ -2,15 +2,21 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 
 const eslintConfig = [
   ...nextVitals,
+
   {
     ignores: [
       "node_modules/**",
       ".next/**",
+      ".next-dev/**",
+      ".vercel/**",
       "dist/**",
       "supabase/functions/**",
       ".local/**",
+      "actions-runner/**",
+      "attached_assets/**",
     ],
   },
+
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     rules: {
