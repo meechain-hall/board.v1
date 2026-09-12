@@ -35,24 +35,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.2.0
 
-      - name: Enable pnpm via Corepack
-        run: |
-          corepack enable
-          corepack prepare pnpm@10.26.1 --activate
-
       - name: Setup Node.js
         uses: actions/setup-node@v4.1.0
         with:
           node-version: '22'
 
+      - name: Enable pnpm via Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.26.1 --activate
+          
       - name: Install dependencies
-        run: corepack pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Run ESLint
-        run: corepack pnpm run lint
+        run: pnpm run lint
 
       - name: Run TypeScript check
-        run: corepack pnpm run typecheck
+        run: pnpm run typecheck
 
 
   build:
@@ -64,18 +64,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.2.0
 
-      - name: Enable pnpm via Corepack
-        run: |
-          corepack enable
-          corepack prepare pnpm@10.26.1 --activate
-
       - name: Setup Node.js
         uses: actions/setup-node@v4.1.0
         with:
           node-version: '22'
 
+      - name: Enable pnpm via Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.26.1 --activate
+          
       - name: Install dependencies
-        run: corepack pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Verify environment
         run: |
@@ -86,7 +86,7 @@ jobs:
           echo "NEXT_PUBLIC_CHAIN_ID: ${NEXT_PUBLIC_CHAIN_ID}"
 
       - name: Build Next.js
-        run: corepack pnpm run build
+        run: pnpm run build
         env:
           NEXT_PUBLIC_API_URL: ${{ env.NEXT_PUBLIC_API_URL }}
           NEXT_PUBLIC_RPC_URL: ${{ env.NEXT_PUBLIC_RPC_URL }}
@@ -113,21 +113,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.2.0
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: '22'
+          
       - name: Enable pnpm via Corepack
         run: |
           corepack enable
           corepack prepare pnpm@10.26.1 --activate
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4.1.0
-        with:
-          node-version: '22'
-
       - name: Install dependencies
-        run: corepack pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Run pnpm audit
-        run: corepack pnpm audit --audit-level=moderate
+        run: pnpm audit --audit-level=moderate
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@v0.36.0
