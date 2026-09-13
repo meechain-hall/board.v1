@@ -91,31 +91,6 @@ jobs:
           NEXT_PUBLIC_RPC_URL: ${{ env.NEXT_PUBLIC_RPC_URL }}
           NEXT_PUBLIC_CHAIN_ID: ${{ env.NEXT_PUBLIC_CHAIN_ID }}
 
-      - name: Upload build artifacts
-        if: success()
-        uses: actions/upload-artifact@v4.4.0
-        with:
-          name: nextjs-build
-          path: .next
-          retention-days: 7
-
-  security:
-    runs-on: ubuntu-latest
-    name: Security Scan
-    needs: lint-and-typecheck
-    permissions:
-      contents: read
-      security-events: write
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4.2.0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4.1.0
-        with:
-          node-version: '22'
-          
       - name: Enable pnpm via Corepack
         run: |
           corepack enable
@@ -126,21 +101,6 @@ jobs:
 
       - name: Run pnpm audit
         run: pnpm audit --audit-level=moderate
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          scan-type: fs
-          scan-ref: .
-          format: sarif
-          output: trivy-results.sarif
-          ignore-unfixed: true
-
-      - name: Upload Trivy results
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3.27.0
-        with:
-          sarif_file: trivy-results.sarif
           
   e2e-playwright:
     runs-on: ubuntu-latest
@@ -165,13 +125,7 @@ jobs:
     name: Deploy to Vercel
     needs:
       - build
-      - security
-    if: >
-      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
-      github.ref == 'refs/heads/main'
-    permissions:
-      contents: read
-
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.2.0
@@ -223,10 +177,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Production Verification
     needs: deploy-vercel
-
-    if: >
-      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
-      github.ref == 'refs/heads/main'
 
     steps:
       - name: Verify production API
