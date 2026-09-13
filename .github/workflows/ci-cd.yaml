@@ -1,508 +1,275 @@
-# This workflow is managed by gh actions-lock.
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 name: CI/CD Pipeline
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 on:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
   push:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
     branches:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - main
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - develop
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
   pull_request:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
     branches:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - main
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - develop
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
   workflow_dispatch:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 concurrency:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
   group: ci-${{ github.workflow }}-${{ github.ref }}
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
   cancel-in-progress: true
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 env:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
   NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL || 'https://api.meechain.live' }}
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
   NEXT_PUBLIC_RPC_URL: ${{ secrets.NEXT_PUBLIC_RPC_URL || 'https://rpc.meechain.live' }}
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
   NEXT_PUBLIC_CHAIN_ID: ${{ secrets.NEXT_PUBLIC_CHAIN_ID || '13390' }}
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 permissions:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
   contents: read
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 jobs:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
   lint-and-typecheck:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
     runs-on: ubuntu-latest
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
     name: Lint & Type Check
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
     steps:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - name: Checkout code
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-        uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
+        uses: actions/checkout@v4.2.0
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - name: Setup Node.js
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
+        uses: actions/setup-node@v4.1.0
         with:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           node-version: '22'
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - name: Enable pnpm via Corepack
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
         run: |
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           corepack enable
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           corepack prepare pnpm@10.26.1 --activate
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - name: Install dependencies
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
         run: pnpm install --frozen-lockfile
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - name: Run ESLint
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
         run: pnpm run lint
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - name: Run TypeScript check
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
         run: pnpm run typecheck
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
   build:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
     runs-on: ubuntu-latest
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
     name: Build Next.js
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
     needs: lint-and-typecheck
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
     steps:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - name: Checkout code
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-        uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
+        uses: actions/checkout@v4.2.0
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - name: Setup Node.js
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
+        uses: actions/setup-node@v4.1.0
         with:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           node-version: '22'
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - name: Enable pnpm via Corepack
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
         run: |
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           corepack enable
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           corepack prepare pnpm@10.26.1 --activate
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - name: Install dependencies
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
         run: pnpm install --frozen-lockfile
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - name: Verify environment
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
         run: |
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           echo "Node: $(node --version)"
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           echo "pnpm:  $(pnpm --version)"
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           echo "NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}"
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           echo "NEXT_PUBLIC_RPC_URL: ${NEXT_PUBLIC_RPC_URL}"
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           echo "NEXT_PUBLIC_CHAIN_ID: ${NEXT_PUBLIC_CHAIN_ID}"
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - name: Build Next.js
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
         run: pnpm run build
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
         env:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           NEXT_PUBLIC_API_URL: ${{ env.NEXT_PUBLIC_API_URL }}
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           NEXT_PUBLIC_RPC_URL: ${{ env.NEXT_PUBLIC_RPC_URL }}
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           NEXT_PUBLIC_CHAIN_ID: ${{ env.NEXT_PUBLIC_CHAIN_ID }}
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
+      - name: Upload build artifacts
+        if: success()
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: nextjs-build
+          path: .next
+          retention-days: 7
+
   security:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
     runs-on: ubuntu-latest
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
     name: Security Scan
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
     needs: lint-and-typecheck
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
     permissions:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       contents: read
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       security-events: write
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
     steps:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - name: Checkout code
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-        uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
+        uses: actions/checkout@v4.2.0
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - name: Setup Node.js
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
+        uses: actions/setup-node@v4.1.0
         with:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           node-version: '22'
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - name: Enable pnpm via Corepack
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
         run: |
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           corepack enable
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
           corepack prepare pnpm@10.26.1 --activate
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - name: Install dependencies
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
         run: pnpm install --frozen-lockfile
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
       - name: Run pnpm audit
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
         run: pnpm audit --audit-level=moderate
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-  e2e-playwright:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    runs-on: ubuntu-latest
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    name: E2E Tests (Playwright)
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    needs: build
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    if: false
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    steps:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-      - run: echo "Playwright verification is not configured yet."
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-  e2e-cypress:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    runs-on: ubuntu-latest
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    name: E2E Tests (Cypress)
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    needs: build
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    if: false
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    steps:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-      - run: echo "Cypress verification is not configured yet."
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-  deploy-vercel:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    runs-on: ubuntu-latest
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    name: Deploy to Vercel
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    needs:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-      - build
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-      - security
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    if: >
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-      github.ref == 'refs/heads/main'
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    permissions:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-      contents: read
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    steps:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-      - name: Checkout code
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-        uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          fetch-depth: 0
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
+          scan-type: fs
+          scan-ref: .
+          format: sarif
+          output: trivy-results.sarif
+          ignore-unfixed: true
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-      - name: Verify Vercel secrets are configured
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-        env:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-        run: |
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          missing=0
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          [ -z "$VERCEL_TOKEN" ] && { echo "::error::VERCEL_TOKEN secret ไม่ได้ตั้งค่า"; missing=1; }
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          [ -z "$VERCEL_ORG_ID" ] && { echo "::error::VERCEL_ORG_ID secret ไม่ได้ตั้งค่า"; missing=1; }
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          [ -z "$VERCEL_PROJECT_ID" ] && { echo "::error::VERCEL_PROJECT_ID secret ไม่ได้ตั้งค่า"; missing=1; }
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          if [ "$missing" -eq 1 ]; then
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            echo "::error::ไปตั้งค่าที่ Settings → Secrets and variables → Actions ก่อน"
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            exit 1
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          fi
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          echo "✓ Vercel secrets ครบทั้ง 3 ตัว"
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-      - name: Deploy to Vercel
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-        env:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-        run: |
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          npx --yes vercel@latest deploy --prod --yes \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --token "$VERCEL_TOKEN" \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --scope "$VERCEL_ORG_ID" \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --project "$VERCEL_PROJECT_ID" \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --meta githubCommitSha="${{ github.sha }}" \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --meta githubCommitRef="${{ github.ref_name }}" \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --build-env "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --build-env "NEXT_PUBLIC_RPC_URL=${NEXT_PUBLIC_RPC_URL}" \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --build-env "NEXT_PUBLIC_CHAIN_ID=${NEXT_PUBLIC_CHAIN_ID}" \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --env "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --env "NEXT_PUBLIC_RPC_URL=${NEXT_PUBLIC_RPC_URL}" \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --env "NEXT_PUBLIC_CHAIN_ID=${NEXT_PUBLIC_CHAIN_ID}"
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-      - name: Deployment summary
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-        run: |
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          echo "=========================================="
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          echo " MeeChain Production Deployment"
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          echo "=========================================="
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-  production-verify:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
+      - name: Upload Trivy results
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3.27.0
+        with:
+          sarif_file: trivy-results.sarif
+          
+  e2e-playwright:
     runs-on: ubuntu-latest
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    name: Production Verification
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    needs: deploy-vercel
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    if: >
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-      github.ref == 'refs/heads/main'
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    steps:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-      - name: Verify production API
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-        run: |
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          echo "Checking production health endpoint..."
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          curl \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --fail \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --silent \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --show-error \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --max-time 20 \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            https://board.meechain.live/api/health
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          echo
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          echo "Production health check passed."
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-      - name: Verify RPC endpoint
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-        run: |
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          echo "Checking MeeChain RPC..."
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          RESPONSE=$(curl \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --fail \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --silent \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --show-error \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --max-time 20 \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            -X POST \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            -H "Content-Type: application/json" \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            --data '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}' \
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            https://rpc.meechain.live)
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          echo "$RESPONSE"
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          echo "$RESPONSE" | grep -q '"0x344e"' || {
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            echo "ERROR: RPC returned unexpected chain ID."
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-            exit 1
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          }
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-          echo "RPC chain ID verification passed."
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-  performance:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    runs-on: ubuntu-latest
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
-    name: Performance Verification
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
+    name: E2E Tests (Playwright)
+    needs: build
     if: false
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
 
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
     steps:
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
+      - run: echo "Playwright verification is not configured yet."
+
+  e2e-cypress:
+    runs-on: ubuntu-latest
+    name: E2E Tests (Cypress)
+    needs: build
+    if: false
+
+    steps:
+      - run: echo "Cypress verification is not configured yet."
+
+  deploy-vercel:
+    runs-on: ubuntu-latest
+    name: Deploy to Vercel
+    needs:
+      - build
+      - security
+    if: >
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.0
+        with:
+          fetch-depth: 0
+
+      - name: Verify Vercel secrets are configured
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          missing=0
+          [ -z "$VERCEL_TOKEN" ] && { echo "::error::VERCEL_TOKEN secret ไม่ได้ตั้งค่า"; missing=1; }
+          [ -z "$VERCEL_ORG_ID" ] && { echo "::error::VERCEL_ORG_ID secret ไม่ได้ตั้งค่า"; missing=1; }
+          [ -z "$VERCEL_PROJECT_ID" ] && { echo "::error::VERCEL_PROJECT_ID secret ไม่ได้ตั้งค่า"; missing=1; }
+          if [ "$missing" -eq 1 ]; then
+            echo "::error::ไปตั้งค่าที่ Settings → Secrets and variables → Actions ก่อน"
+            exit 1
+          fi
+          echo "✓ Vercel secrets ครบทั้ง 3 ตัว"
+
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          npx --yes vercel@latest deploy --prod --yes \
+            --token "$VERCEL_TOKEN" \
+            --scope "$VERCEL_ORG_ID" \
+            --project "$VERCEL_PROJECT_ID" \
+            --meta githubCommitSha="${{ github.sha }}" \
+            --meta githubCommitRef="${{ github.ref_name }}" \
+            --build-env "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" \
+            --build-env "NEXT_PUBLIC_RPC_URL=${NEXT_PUBLIC_RPC_URL}" \
+            --build-env "NEXT_PUBLIC_CHAIN_ID=${NEXT_PUBLIC_CHAIN_ID}" \
+            --env "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" \
+            --env "NEXT_PUBLIC_RPC_URL=${NEXT_PUBLIC_RPC_URL}" \
+            --env "NEXT_PUBLIC_CHAIN_ID=${NEXT_PUBLIC_CHAIN_ID}"
+
+      - name: Deployment summary
+        run: |
+          echo "=========================================="
+          echo " MeeChain Production Deployment"
+          echo "=========================================="
+
+  production-verify:
+    runs-on: ubuntu-latest
+    name: Production Verification
+    needs: deploy-vercel
+
+    if: >
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Verify production API
+        run: |
+          echo "Checking production health endpoint..."
+
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --max-time 20 \
+            https://board.meechain.live/api/health
+
+          echo
+          echo "Production health check passed."
+
+      - name: Verify RPC endpoint
+        run: |
+          echo "Checking MeeChain RPC..."
+
+          RESPONSE=$(curl \
+            --fail \
+            --silent \
+            --show-error \
+            --max-time 20 \
+            -X POST \
+            -H "Content-Type: application/json" \
+            --data '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}' \
+            https://rpc.meechain.live)
+
+          echo "$RESPONSE"
+
+          echo "$RESPONSE" | grep -q '"0x344e"' || {
+            echo "ERROR: RPC returned unexpected chain ID."
+            exit 1
+          }
+
+          echo "RPC chain ID verification passed."
+
+  performance:
+    runs-on: ubuntu-latest
+    name: Performance Verification
+    if: false
+
+    steps:
       - run: echo "Performance verification is not configured yet."
-quasecurity/trivy-action@v0.36.0#aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25#g
