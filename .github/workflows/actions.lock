@@ -4,8 +4,8 @@
 version: 'v0.0.2'
 workflows:
     '.github/workflows/ci-cd.yaml':
-        - 'actions/checkout@v4.2.0'
-        - 'actions/setup-node@v4.1.0'
+        - 'actions/checkout@d632683dd7b4114ad314bca15554477dd762a938'
+        - 'actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af'
         - 'actions/upload-artifact@v4.4.0'
         - 'aquasecurity/trivy-action@v0.36.0'
         - 'github/codeql-action@v3.27.0'
@@ -25,12 +25,12 @@ dependencies:
         commit: 'sha1-8e8c483db84b4bee98b60c0593521ed34d9990e8'
         owner_id: 44036562
         repo_id: 197814629
-    'actions/checkout@v4.2.0':
+    'actions/checkout@d632683dd7b4114ad314bca15554477dd762a938':
         ref: 'v4.2.0'
         commit: 'sha1-d632683dd7b4114ad314bca15554477dd762a938'
         owner_id: 44036562
         repo_id: 197814629
-    'actions/setup-node@v4.1.0':
+    'actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af':
         ref: 'v4.1.0'
         commit: 'sha1-39370e3970a6d050c480ffad4ff0ed4d3fdee5af'
         owner_id: 44036562
