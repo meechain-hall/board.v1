@@ -111,6 +111,7 @@ Deno.serve(async (req: Request) => {
     if (err && typeof err === "object" && "status" in err && typeof (err as any).status === "number") {
       status = (err as any).status;
     }
-    return jsonResponse({ error: serializeError(err) }, status, origin);
+    const clientMessage = status >= 500 ? "Internal server error" : "Request failed";
+    return jsonResponse({ error: clientMessage }, status, origin);
   }
 });
