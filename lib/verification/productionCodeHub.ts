@@ -18,7 +18,7 @@ async function checkGithubCommit(): Promise<Evidence> {
       label: 'ตัวระบุตัวตนของการยืนยันแหล่งที่มา (Git SHA)',
       value: commit.shortSha,
       status: 'pass',
-      source: 'identity-only',
+      source: 'live-probe',
       timestamp: new Date().toISOString(),
       detail: { fullSha: commit.sha, message: commit.message, date: commit.date },
     };
@@ -28,7 +28,7 @@ async function checkGithubCommit(): Promise<Evidence> {
       label: 'ตัวระบุตัวตนของการยืนยันแหล่งที่มา (Git SHA)',
       value: '',
       status: 'unknown',
-      source: 'identity-only',
+      source: 'live-probe',
       timestamp: new Date().toISOString(),
       error: serializeError(err),
     };
