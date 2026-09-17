@@ -60,8 +60,8 @@ export async function POST(req: NextRequest) {
     const res = await fetch(`${url}/functions/v1/relay-packet`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${key}`,
+       'Content-Type': 'application/json',
+      apikey: key,
       },
       body: JSON.stringify({ ...body, source: body.source || 'dashboard' }),
     });
