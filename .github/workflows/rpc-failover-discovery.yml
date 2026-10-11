@@ -1,0 +1,51 @@
+name: RPC Failover Discovery
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    name: Probe candidate RPC endpoints
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        endpoint:
+          - https://rpc.meechain.live
+          - https://meechain.run.place
+          - https://meechain.run.place/rpc
+          - https://rpc.meechain.run.place
+    steps:
+      - name: Test JSON-RPC chain identity
+        env:
+          RPC_URL: ${{ matrix.endpoint }}
+        run: |
+          set +e
+          BODY_FILE="$(mktemp)"
+          HTTP_CODE="$(curl --silent --show-error --location --max-time 12 \
+            --output "$BODY_FILE" --write-out '%{http_code}' \
+            --header 'Content-Type: application/json' \
+            --request POST \
+            --data '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}' \
+            "$RPC_URL" 2>/tmp/curl-error.txt)"
+          CURL_STATUS=$?
+          BODY="$(cat "$BODY_FILE" 2>/dev/null)"
+          CURL_ERROR="$(cat /tmp/curl-error.txt 2>/dev/null)"
+          CHAIN_ID="$(printf '%s' "$BODY" | jq -r '.result // empty' 2>/dev/null)"
+          if [ "$CURL_STATUS" -eq 0 ] && [ "$HTTP_CODE" = "200" ] && [ "$CHAIN_ID" = "0x344e" ]; then
+            STATUS="PASS — JSON-RPC responds with expected chain ID 13390"
+          elif [ "$CURL_STATUS" -eq 0 ] && [ "$HTTP_CODE" = "200" ] && [ -n "$CHAIN_ID" ]; then
+            STATUS="FAIL — unexpected chain ID: $CHAIN_ID (expected 0x344e / 13390)"
+          else
+            STATUS="FAIL — curl_status=$CURL_STATUS http=$HTTP_CODE body=$(printf '%s' "$BODY" | head -c 250) error=$CURL_ERROR"
+          fi
+          echo "## RPC probe: $RPC_URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "- $STATUS" >> "$GITHUB_STEP_SUMMARY"
+          echo
+          echo "Endpoint: $RPC_URL"
+          echo "$STATUS"
+          # Discovery is diagnostic only: report each candidate without deploying or changing production.
+          rm -f "$BODY_FILE"
